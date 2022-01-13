@@ -33,6 +33,7 @@ function CsvDropzone() {
 	} = useDropzone({onDrop, accept: 'text/csv'})
 
 	return (
+		<>
 		<div {...getRootProps({
 			className: `dropzone 
 			${isDragAccept && 'fileAccept'} 
@@ -45,6 +46,17 @@ function CsvDropzone() {
 		      <p>Drag 'n' drop a CSV file here, or click to select file</p>
 		  }
 		</div>
+
+		<table>
+			{parsedCsvData && parsedCsvData.map((row_obj, row_idx) => (
+				<tr key={row_idx}>
+					{Object.keys(row_obj).map((cell_name, cell_idx) => (
+						<td key={cell_idx}>{cell_name}</td>
+					))}
+				</tr>
+			))}
+		</table>
+		</>
 	)
 }
 
