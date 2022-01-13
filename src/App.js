@@ -1,5 +1,6 @@
 import {useState} from 'react';
 import CsvDropzone from './components/CsvDropzone';
+import CsvTable from './components/CsvTable.js';
 import Papa from 'papaparse';
 
 function App() {
@@ -21,15 +22,7 @@ function App() {
     <div className="App">
       <CsvDropzone handleDrop={parseFile}/>
 
-      <table>
-        {parsedCsvData && parsedCsvData.map((row_obj, row_idx) => (
-          <tr key={row_idx}>
-            {Object.keys(row_obj).map((cell_name, cell_idx) => (
-              <td key={cell_idx}>{cell_name}</td>
-            ))}
-          </tr>
-        ))}
-      </table>
+      {parsedCsvData && <CsvTable data={parsedCsvData} />}
     </div>
   );
 }
