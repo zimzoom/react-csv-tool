@@ -1,11 +1,29 @@
-import {useCallback} from 'react';
+import {useCallback, useState} from 'react';
 import {useDropzone} from 'react-dropzone';
 import './dropzone.css';
+import Papa from 'papaparse';
 
 function CsvDropzone() {
+	const [parsedCsvData, setParsedCsvData] = useState([]);
+
+  const parseFile = file => {
+  	Papa.parse(file, {
+  		header: true,
+  		complete: results => {
+  			console.log("parsed!")
+  			console.log(results.data)
+  			setParsedCsvData(results.data)
+  		},
+  	});
+  };
+
   const onDrop = useCallback(acceptedFiles => {
-    console.log(acceptedFiles);
+    if (acceptedFiles.length) {
+    	console.log(acceptedFiles[0]);
+    	parseFile(acceptedFiles[0]);
+    }
   }, []);
+
   const {
   	getRootProps, 
   	getInputProps, 
