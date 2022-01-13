@@ -1,26 +1,13 @@
-import {useCallback, useState} from 'react';
+import {useCallback} from 'react';
 import {useDropzone} from 'react-dropzone';
 import './dropzone.css';
-import Papa from 'papaparse';
 
-function CsvDropzone() {
-	const [parsedCsvData, setParsedCsvData] = useState([]);
-
-	const parseFile = file => {
-		Papa.parse(file, {
-			header: true,
-			complete: results => {
-				console.log("parsed!")
-				console.log(results.data)
-				setParsedCsvData(results.data)
-			},
-		});
-	};
+function CsvDropzone({handleDrop}) {
 
 	const onDrop = useCallback(acceptedFiles => {
 	if (acceptedFiles.length) {
 		console.log(acceptedFiles[0]);
-		parseFile(acceptedFiles[0]);
+		handleDrop(acceptedFiles[0]);
 	}
 	}, []);
 
@@ -46,16 +33,6 @@ function CsvDropzone() {
 		      <p>Drag 'n' drop a CSV file here, or click to select file</p>
 		  }
 		</div>
-
-		<table>
-			{parsedCsvData && parsedCsvData.map((row_obj, row_idx) => (
-				<tr key={row_idx}>
-					{Object.keys(row_obj).map((cell_name, cell_idx) => (
-						<td key={cell_idx}>{cell_name}</td>
-					))}
-				</tr>
-			))}
-		</table>
 		</>
 	)
 }
