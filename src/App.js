@@ -11,9 +11,9 @@ function App() {
     Papa.parse(file, {
       header: true,
       complete: results => {
-        console.log("parsed!")
-        console.log(results.data)
-        setParsedCsvData(results.data)
+        console.log("parsed!");
+        console.log(results.data);
+        setParsedCsvData(results.data);
       },
     });
   };
@@ -22,7 +22,7 @@ function App() {
     <div className="App">
       <CsvDropzone handleDrop={parseFile}/>
 
-      {parsedCsvData && <CsvTable data={parsedCsvData} />}
+      {!!parsedCsvData.length && <CsvTable data={parsedCsvData} />}
     </div>
   );
 }
