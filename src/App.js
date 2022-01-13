@@ -11,8 +11,6 @@ function App() {
     Papa.parse(file, {
       header: true,
       complete: results => {
-        console.log("parsed!");
-        console.log(results.data);
         setParsedCsvData(results.data);
       },
     });
