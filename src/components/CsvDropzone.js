@@ -1,5 +1,6 @@
 import {useCallback} from 'react';
 import {useDropzone} from 'react-dropzone';
+import './dropzone.css';
 
 function CsvDropzone() {
   const onDrop = useCallback(acceptedFiles => {
@@ -14,12 +15,16 @@ function CsvDropzone() {
   } = useDropzone({onDrop, accept: 'text/csv'})
 
   return (
-    <div {...getRootProps()}>
+    <div {...getRootProps({
+    	className: `dropzone 
+    	${isDragAccept && 'fileAccept'} 
+    	${isDragReject && 'fileReject'}`
+    })}>
       <input {...getInputProps()} />
       {
         isDragActive ?
-          <p>Drop the files here ...</p> :
-          <p>Drag 'n' drop some files here, or click to select files</p>
+          <p>Drop here ...</p> :
+          <p>Drag 'n' drop a CSV file here, or click to select file</p>
       }
     </div>
   )

@@ -1,0 +1,7 @@
+.fileReject {
+	border: 2px dashed red;
+}
+
+.fileAccept {
+	border: 2px solid green;
+}
