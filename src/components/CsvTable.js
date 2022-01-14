@@ -3,13 +3,14 @@ import clone from '../util.js';
 
 function CsvTable(props) {
 	const [state, setState] = useState({ 
-		data: props.initialData, 
+		data: props.initialData.map((row_obj, idx) => ({...row_obj, ID: idx})), 
 		sortby: null,
 		descending: false,
-		editCell: null
+		editCell: null, // {row: index, column: index}
+		search: false,
 	});
 	const [headers, setHeaders] = useState(Object.keys(props.initialData[0]));
-	//const [editCell, setEditCell] = useState(null); // row: index, column: index
+	const [preSearchData, setPreSearchData] = useState(null);
 
 	// Sorts by column clicked - reverse order if clicked again
 	const sort = e => {
@@ -49,7 +50,14 @@ function CsvTable(props) {
 		setState({...state, data: dataClone, editCell: null});
 	}
 
+	// Show/hide search bar
+	const toggleSearch = () => {}
+
 	return (
+		<>
+		<button className="toolbar" onClick={toggleSearch}>
+			{state.search ? 'Hide Search' : 'Show search'}
+		</button>
 		<table>
 			<thead onClick={sort}>
 				<tr>{headers.map((header, idx) => {
@@ -62,9 +70,9 @@ function CsvTable(props) {
 			</thead>
 			<tbody onDoubleClick={showEditor}>
 		        {state.data.map((row_obj, row_idx) => (
-		          <tr key={row_idx} data-row={row_idx}>
+		          <tr key={row_obj.ID} data-row={row_obj.ID}>
 		            {headers.map((col, col_idx) => {
-						if (state.editCell && state.editCell.row === row_idx && state.editCell.column === col_idx) {
+						if (state.editCell && state.editCell.row === row_obj.ID && state.editCell.column === col_idx) {
 							return <td key={col_idx}>
 									<form onSubmit={save}>
 										<input type="text" defaultValue={row_obj[col]} />
@@ -77,6 +85,7 @@ function CsvTable(props) {
 		        ))}
 	        </tbody>
     	</table>
+		</>
 	)
 }
 
