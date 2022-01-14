@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import clone from '../util.js';
+import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
 
 // Expects array of objects, which requires Papaparse 'headers' set to true
 function CsvTable(props) {
@@ -119,10 +121,10 @@ function CsvTable(props) {
 
 	return (
 		<>
-		<button className="toolbar" onClick={toggleSearch}>
+		<Button variant="primary" onClick={toggleSearch}>
 			{state.searching ? 'Hide Search' : 'Show search'}
-		</button>
-		<table>
+		</Button>
+		<Table striped bordered>
 			<thead onClick={sort}>
 				<tr>{headers.map((header, idx) => {
 					if (state.sortby === header) {
@@ -149,7 +151,7 @@ function CsvTable(props) {
 		          </tr>
 		        ))}
 	        </tbody>
-    	</table>
+    	</Table>
 		</>
 	)
 }

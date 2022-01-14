@@ -1,3 +1,5 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import {useState} from 'react';
 import CsvDropzone from './components/CsvDropzone';
 import CsvTable from './components/CsvTable.js';
