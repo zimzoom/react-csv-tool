@@ -7,7 +7,7 @@ function CsvTable(props) {
 		sortby: null,
 		descending: false,
 		editCell: null, // {row: index, column: index}
-		search: false,
+		searching: false,
 	});
 	const [headers, setHeaders] = useState(Object.keys(props.initialData[0]));
 	const [preSearchData, setPreSearchData] = useState(null);
@@ -50,13 +50,28 @@ function CsvTable(props) {
 		setState({...state, data: dataClone, editCell: null});
 	}
 
+	// Filter data based on search input
+	const search = (e) => {}
+
 	// Show/hide search bar
-	const toggleSearch = () => {}
+	const toggleSearch = () => {
+		
+	}
+
+	const searchRow = !state.searching ? null : (
+		<tr onChange={search}>
+			{headers.map((_, idx) => (
+				<td key={idx}>
+					<input type="text" data-idx={idx} />
+				</td>
+			))}
+		</tr>
+	);
 
 	return (
 		<>
 		<button className="toolbar" onClick={toggleSearch}>
-			{state.search ? 'Hide Search' : 'Show search'}
+			{state.searching ? 'Hide Search' : 'Show search'}
 		</button>
 		<table>
 			<thead onClick={sort}>
@@ -69,6 +84,7 @@ function CsvTable(props) {
 				})}</tr>
 			</thead>
 			<tbody onDoubleClick={showEditor}>
+				{searchRow}
 		        {state.data.map((row_obj, row_idx) => (
 		          <tr key={row_obj.ID} data-row={row_obj.ID}>
 		            {headers.map((col, col_idx) => {
