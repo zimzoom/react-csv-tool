@@ -9,9 +9,9 @@ function CsvTable(props) {
 		descending: false,
 		editCell: null, // {row: index, column: index}
 		searching: false,
+		preSearchData: null,
 	});
 	const [headers, setHeaders] = useState(Object.keys(props.initialData[0]));
-	const [preSearchData, setPreSearchData] = useState(null);
 
 	// Sorts by column clicked - reverse order if clicked again
 	const sort = e => {
@@ -40,26 +40,47 @@ function CsvTable(props) {
 		});
 	}
 
-	// Saves changes from input field
+	// Saves changes from editor input field
 	const save = e => {
 		e.preventDefault();
 		const input = e.target.firstChild;
-		const dataClone = clone(state.data);
 		const editRow = state.editCell.row;
 		const editCol = state.editCell.column;
-		dataClone[editRow][headers[editCol]] = input.value;
-		setState({...state, data: dataClone, editCell: null});
+		const dataClone = state.data.map((row) => {
+			if (row.ID === editRow) {
+				row[headers[editCol]] = input.value;
+			}
+			return row;
+		});
+		// If there is cached pre-search data, need to edit that as well
+		if (state.preSearchData) {
+			const preSearchClone = state.preSearchData.map((row) => {
+				if (row.ID === editRow) {
+					row[headers[editCol]] = input.value;
+				}
+				return row;
+			});
+			setState({
+				...state,
+				editCell: null,
+				preSearchData: preSearchClone,
+				data: dataClone
+			});
+		} else {
+			setState({...state, editCell: null, data: dataClone});
+		}
 	}
 
 	// Filter data based on search input
 	const search = (e) => {
 		const query = e.target.value.toLowerCase();
+		// If user erases input, reload original data
 		if (!query) {
-			setState({...state, data: preSearchData});
+			setState({...state, data: state.preSearchData});
 			return;
 		}
 		const idx = e.target.dataset.idx;
-		const searchData = preSearchData.filter((row) => {
+		const searchData = state.preSearchData.filter((row) => {
 			return (
 				!!row[headers[idx]] && // handles rows that are blank for this column
 				row[headers[idx]].toString().toLowerCase().indexOf(query) > -1
@@ -75,15 +96,14 @@ function CsvTable(props) {
 		if (state.searching) {
 			setState({
 				...state,
-				data: preSearchData,
+				data: state.preSearchData,
 				searching: false,
+				preSearchData: null,
 			});
-			setPreSearchData(null);
 		} else {
 			// If going from not searching to searching,
 			// save copy of unfiltered data
-			setPreSearchData(state.data);
-			setState({...state, searching: true});
+			setState({...state, searching: true, preSearchData: state.data});
 		}
 	}
 
