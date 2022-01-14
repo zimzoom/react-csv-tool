@@ -2,19 +2,26 @@ import { useState } from 'react';
 import clone from '../util.js';
 
 function CsvTable(props) {
-	const [data, setData] = useState(props.data);
-	const [headers, setHeaders] = useState(Object.keys(data[0]));
+	const [state, setState] = useState({ 
+		data: props.initialData, 
+		sortby: null,
+		descending: false
+	});
+	const [headers, setHeaders] = useState(Object.keys(props.initialData[0]));
 
 	const sort = e => {
 		const column = headers[e.target.cellIndex];
-		const dataClone = clone(data);
+		const dataClone = clone(state.data);
+		const descending = state.sortby === column && !state.descending;
 		dataClone.sort((a, b) => {
 			if (a[column] === b[column]) {
 				return 0;
 			}
-			return a[column] > b[column] ? 1 : -1;
+			return descending ?
+				a[column] < b[column] ? 1 : -1
+				: a[column] > b[column] ? 1 : -1;
 		});
-		setData(dataClone);
+		setState({ data: dataClone, sortby: column, descending: descending});
 	}
 
 	return (
@@ -25,7 +32,7 @@ function CsvTable(props) {
 				})}</tr>
 			</thead>
 			<tbody>
-		        {data.map((row_obj, row_idx) => (
+		        {state.data.map((row_obj, row_idx) => (
 		          <tr key={row_idx}>
 		            {headers.map((col, col_idx) => (
 		            	<td key={col_idx}>{row_obj[col]}</td>

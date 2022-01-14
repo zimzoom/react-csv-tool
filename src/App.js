@@ -20,7 +20,7 @@ function App() {
     <div className="App">
       <CsvDropzone handleDrop={parseFile}/>
 
-      {!!parsedCsvData.length && <CsvTable data={parsedCsvData} />}
+      {!!parsedCsvData.length && <CsvTable initialData={parsedCsvData} />}
     </div>
   );
 }
