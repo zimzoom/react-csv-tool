@@ -28,6 +28,9 @@ function CsvTable(props) {
 		<table>
 			<thead onClick={sort}>
 				<tr>{headers.map((header, idx) => {
+					if (state.sortby === header) {
+						header += state.descending ? ' \u2191' : ' \u2193';
+					}
 					return <th key={idx}>{header}</th>;
 				})}</tr>
 			</thead>
