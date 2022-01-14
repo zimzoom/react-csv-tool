@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import clone from '../util.js';
 
+// Expects array of objects, which requires Papaparse 'headers' set to true
 function CsvTable(props) {
 	const [state, setState] = useState({ 
 		data: props.initialData.map((row_obj, idx) => ({...row_obj, ID: idx})), 
@@ -51,11 +52,39 @@ function CsvTable(props) {
 	}
 
 	// Filter data based on search input
-	const search = (e) => {}
+	const search = (e) => {
+		const query = e.target.value.toLowerCase();
+		if (!query) {
+			setState({...state, data: preSearchData});
+			return;
+		}
+		const idx = e.target.dataset.idx;
+		const searchData = preSearchData.filter((row) => {
+			return (
+				!!row[headers[idx]] && // handles rows that are blank for this column
+				row[headers[idx]].toString().toLowerCase().indexOf(query) > -1
+			);
+		});
+		setState({...state, data: searchData});
+	}
 
-	// Show/hide search bar
+	// Show/hide search bar, enter/exit search mode
 	const toggleSearch = () => {
-		
+		// If going from searching to not searching,
+		// reload pre-search (unfiltered) data and clear presearch 
+		if (state.searching) {
+			setState({
+				...state,
+				data: preSearchData,
+				searching: false,
+			});
+			setPreSearchData(null);
+		} else {
+			// If going from not searching to searching,
+			// save copy of unfiltered data
+			setPreSearchData(state.data);
+			setState({...state, searching: true});
+		}
 	}
 
 	const searchRow = !state.searching ? null : (
